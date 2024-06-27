@@ -1,1 +1,3 @@
 2024-06-27T17:29:58.767Z - Email: Ryan.brown@txg.ie, File: cv24.docx, Status: Success
+2024-06-27T18:43:05.057Z - Email: Ryan.brown@txg.ie, File: cv24.docx, Status: Success
+2024-06-27T19:30:06.740Z - Email: Ryan.brown@txg.ie, File: pdf-cv.pdf, Status: Success

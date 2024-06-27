@@ -8,13 +8,17 @@ import fetch from 'node-fetch';
 // Load environment variables
 const { TELEGRAM_TOKEN, EMAIL_ADDRESS, EMAIL_PASSWORD, GRAB_TALENT_EMAIL } = process.env;
 
-if (!GRAB_TALENT_EMAIL) {
-    console.error('Error: GRAB_TALENT_EMAIL is not set in the .env file.');
-    process.exit(1);
+function checkEnvVariables() {
+    if (!TELEGRAM_TOKEN || !EMAIL_ADDRESS || !EMAIL_PASSWORD || !GRAB_TALENT_EMAIL) {
+        console.error('Error: One or more environment variables are not set.');
+        process.exit(1);
+    }
 }
 
-// Create a bot that uses 'polling' to fetch new updates
-const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true });
+checkEnvVariables();
+
+// Create a bot that uses 'polling' to fetch new updates and enables promise cancellation
+const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true, cancellation: true });
 
 // Set up nodemailer
 const transporter = nodemailer.createTransport({
@@ -76,12 +80,12 @@ async function handleResumeUpload(chatId, document) {
         await sendConfirmationEmail(userEmail);
         bot.sendMessage(chatId, 'Your resume has been successfully received and forwarded to our team at Grab Talent! 🎉\n\nYou should receive a confirmation email shortly. Thank you for using our service!');
 
-        logToFile(userEmail, fileName, 'Success');
+        await logToFile(userEmail, fileName, 'Success');
         delete userSteps[chatId];
     } catch (error) {
         console.error('Error processing file:', error);
         bot.sendMessage(chatId, 'Oops! There was an error processing your file. Please try again.');
-        logToFile(userEmail, fileName, `Error: ${error.message}`);
+        await logToFile(userEmail, fileName, `Error: ${error.message}`);
     }
 }
 
@@ -113,7 +117,7 @@ async function sendEmailWithAttachment(from, to, subject, text, filename, filepa
         console.log(`Email sent: ${info.response}`);
     } catch (error) {
         console.error('Error sending email:', error);
-        logToFile(from, filename, `Error: ${error.message}`);
+        await logToFile(from, filename, `Error: ${error.message}`);
     }
 }
 
@@ -130,7 +134,7 @@ async function sendConfirmationEmail(to) {
         console.log(`Confirmation email sent: ${info.response}`);
     } catch (error) {
         console.error('Error sending confirmation email:', error);
-        logToFile(EMAIL_ADDRESS, 'Confirmation Email', `Error: ${error.message}`);
+        await logToFile(EMAIL_ADDRESS, 'Confirmation Email', `Error: ${error.message}`);
     }
 }
 
