@@ -73,7 +73,11 @@ async function handleResumeUpload(chatId, document) {
         let notifiedAdmins = 'Admin notified';
 
         try {
-            await bot.sendMessage(ADMIN_GROUP_CHAT_ID, `New resume submitted by ${email}. Filename: ${document.file_name}`);
+            await bot.sendMessage(
+                ADMIN_GROUP_CHAT_ID, 
+                `*New resume submitted:* \n\ \n*Email:* ${email} \n*Filename:* ${document.file_name} \n*Method:* Telegram`, 
+                { parse_mode: 'Markdown' }
+            );
         } catch (notificationError) {
             notifiedAdmins = `Admin notification failed: ${notificationError.message}`;
         }
@@ -84,6 +88,7 @@ async function handleResumeUpload(chatId, document) {
         await handleError(chatId, email, document.file_name, error);
     }
 }
+
 
 async function downloadFile(fileId, dest) {
     const response = await fetch(await bot.getFileLink(fileId));
