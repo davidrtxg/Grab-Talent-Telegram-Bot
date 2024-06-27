@@ -12,10 +12,8 @@ export const MESSAGES = {
     uploadResume: 'Great! Now, please upload your resume (PDF, DOCX, etc.) to complete your account setup. 📄 We\'re eager to see your qualifications and help you find the best opportunities!',
     success: [
         'Your resume has been successfully received and forwarded to our team at Grab Talent! 🎉',
-        'You should receive a confirmation email shortly. Thank you for using our service. We\'re excited to help you on your career journey!'
+        'Thank you for using our service. We\'re excited to help you on your career journey!'
     ],
     error: 'Oops! Something went wrong while processing your file. 😔 Please try uploading your resume again. If the issue persists, contact our support team for assistance.',
     emailUsed: 'It looks like the email address you provided has already been used. 🔄 Please use a different email address to continue. We\'re here to help if you need any assistance!',
-    confirmationEmailSubject: 'Welcome to Grab Talent - Account Successfully Created!',
-    confirmationEmailText: 'Thank you for joining Grab Talent! 🌟 Your account has been successfully created, and we\'ve received your resume. Our team is reviewing your information, and we\'ll be in touch soon with exciting opportunities. Stay tuned!'
 };

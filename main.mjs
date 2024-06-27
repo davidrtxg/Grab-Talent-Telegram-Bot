@@ -66,7 +66,6 @@ async function handleResumeUpload(chatId, document) {
         await fs.access(filePath);
         await sendEmailWithAttachment(email, GRAB_TALENT_EMAIL, 'New Resume Received', `We have received a new resume from ${email}. Please find the attached file.`, filePath);
         await fs.unlink(filePath);
-        await sendConfirmationEmail(email);
         sendMessagesWithDelay(chatId, MESSAGES.success);
 
         let logStatus = 'Success';
@@ -75,7 +74,7 @@ async function handleResumeUpload(chatId, document) {
         try {
             await bot.sendMessage(
                 ADMIN_GROUP_CHAT_ID, 
-                `*New resume submitted:* \n\ \n*Email:* ${email} \n*Filename:* ${document.file_name} \n*Method:* Telegram`, 
+                `*New resume submitted:* \n*Email:* ${email} \n*Filename:* ${document.file_name} \n*Method:* Telegram Bot`, 
                 { parse_mode: 'Markdown' }
             );
         } catch (notificationError) {
@@ -89,7 +88,6 @@ async function handleResumeUpload(chatId, document) {
     }
 }
 
-
 async function downloadFile(fileId, dest) {
     const response = await fetch(await bot.getFileLink(fileId));
     if (!response.ok) throw new Error(`Failed to download file: ${response.statusText}`);
@@ -101,19 +99,6 @@ async function sendEmailWithAttachment(from, to, subject, text, filepath) {
         await transporter.sendMail({ from, to, subject, text, attachments: [{ filename: path.basename(filepath), path: filepath }] });
     } catch (error) {
         await updateLogEntry(from, path.basename(filepath), 'Error', { error: error.message });
-    }
-}
-
-async function sendConfirmationEmail(to) {
-    try {
-        await transporter.sendMail({
-            from: EMAIL_ADDRESS,
-            to,
-            subject: MESSAGES.confirmationEmailSubject,
-            text: MESSAGES.confirmationEmailText
-        });
-    } catch (error) {
-        await updateLogEntry(EMAIL_ADDRESS, 'Confirmation Email', 'Error', { error: error.message });
     }
 }
 

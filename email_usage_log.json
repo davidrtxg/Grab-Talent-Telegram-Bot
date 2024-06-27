@@ -1,3 +1,10 @@
 [
-
+  {
+    "timestamp": "2024-06-27T23:44:00.401Z",
+    "chatId": 524677552,
+    "email": "ryan.brown@txg.ie",
+    "status": "Success",
+    "fileName": "cv24.docx",
+    "notifiedAdmins": "Admin notified"
+  }
 ]
