@@ -30,7 +30,7 @@ Welcome to Grab Talent's official Candidate Sign-Up Bot! This bot helps users se
 1. Clone the repository:
    ```bash
    git clone https://github.com/TXG-Ryan/Grab-Talent-Telegram-Bot.git
-   cd grab-talent-bot
+   cd Grab-Talent-Telegram-Bot
    ```
 
 2. Install the dependencies:
