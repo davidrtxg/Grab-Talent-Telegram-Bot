@@ -10,8 +10,6 @@ Welcome to Grab Talent's official Candidate Sign-Up Bot! This bot helps users se
 - [Configuration](#configuration)
 - [Running the Bot](#running-the-bot)
 - [Project Structure](#project-structure)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Features
 
