@@ -31,7 +31,7 @@ Welcome to Grab Talent's official Candidate Sign-Up Bot! This bot helps users se
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/grab-talent-bot.git
+   git clone https://github.com/TXG-Ryan/Grab-Talent-Telegram-Bot.git
    cd grab-talent-bot
    ```
 
@@ -77,17 +77,3 @@ node main.mjs
 - `.env`: Environment variables configuration.
 - `package.json`: Project dependencies and scripts.
 - `README.md`: Project documentation.
-
-## Contributing
-
-We welcome contributions to enhance the functionality of this project. To contribute, please follow these steps:
-
-1. Fork the repository.
-2. Create a new branch for your feature or bugfix.
-3. Make your changes and commit them.
-4. Push your changes to your fork.
-5. Submit a pull request with a description of your changes.
-
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
