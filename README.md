@@ -1,5 +1,5 @@
 
-# Grab Talent - The Hiring Revolution
+# Grab Talent - Official Candidate Sign Up Telegram Bot
 
 Welcome to Grab Talent's official Candidate Sign-Up Bot! This bot helps users seamlessly join our talent platform by guiding them through a simple registration process. Users provide their email, upload their resume, and become a part of the hiring revolution.
 
