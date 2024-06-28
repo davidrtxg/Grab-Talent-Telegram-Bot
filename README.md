@@ -16,8 +16,8 @@ Welcome to Grab Talent's official Candidate Sign-Up Bot! This bot helps users se
 
 - **User Registration**: Guides users through providing their email address and uploading their resume.
 - **Admin Notifications**: Notifies admins in a Telegram group when a new resume is submitted.
-- **Logging**: Logs user interactions and submission statistics for analysis and troubleshooting.
 - **Admin Dashboard**: Provides a web interface for admins to update the message configurations used by the bot.
+- **Logging**: Logs user interactions and submission statistics for analysis and troubleshooting.
 
 ## Getting Started
 
