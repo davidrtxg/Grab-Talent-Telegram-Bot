@@ -31,7 +31,12 @@ app.get('/admin', async (req, res) => {
 });
 
 app.post('/admin', async (req, res) => {
-    const updatedMessages = req.body;
+    const updatedMessages = {};
+    for (let key in req.body) {
+        const value = req.body[key];
+        updatedMessages[key] = value.includes('\n') ? value.split('\n') : value;
+    }
+
     const newConfigContent = `export const MESSAGES = ${JSON.stringify(updatedMessages, null, 4)};`;
     try {
         await fs.writeFile(MESSAGE_CONFIG_PATH, newConfigContent);
