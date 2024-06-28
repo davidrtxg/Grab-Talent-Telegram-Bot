@@ -9,13 +9,15 @@ Welcome to Grab Talent's official Candidate Sign-Up Bot! This bot helps users se
 - [Getting Started](#getting-started)
 - [Configuration](#configuration)
 - [Running the Bot](#running-the-bot)
+- [Running the Admin Dashboard](#running-the-admin-dashboard)
 - [Project Structure](#project-structure)
 
 ## Features
 
-- **User Registration**: Guide users to provide their email address and upload their resume.
-- **Admin Notifications**: Notify admins in a Telegram group when a new resume is submitted.
-- **Logging**: Log user interactions and submission statistics for analysis and troubleshooting.
+- **User Registration**: Guides users through providing their email address and uploading their resume.
+- **Admin Notifications**: Notifies admins in a Telegram group when a new resume is submitted.
+- **Logging**: Logs user interactions and submission statistics for analysis and troubleshooting.
+- **Admin Dashboard**: Provides a web interface for admins to update the message configurations used by the bot.
 
 ## Getting Started
 
@@ -54,8 +56,24 @@ ADMIN_GROUP_CHAT_ID=your_admin_group_chat_id
 To start the bot, run the following command:
 
 ```bash
-node main.mjs
+npm run start
 ```
+
+## Running the Admin Dashboard
+
+To start the admin dashboard, run the following command:
+
+```bash
+npm run admin
+```
+
+To run both the bot and the admin dashboard simultaneously, use the following command:
+
+```bash
+npm run dev
+```
+
+Then, open your browser and navigate to `http://localhost:3000/admin` to access the admin dashboard.
 
 ## Project Structure
 
@@ -63,14 +81,24 @@ node main.mjs
 .
 ├── config
 │   └── messageConfig.mjs
+├── public
+│   └── styles.css
+├── views
+│   ├── editMessages.ejs
+│   └── layout.ejs
 ├── main.mjs
+├── admin.js
 ├── .env
 ├── package.json
 └── README.md
 ```
 
 - `config/messageConfig.mjs`: Contains the messages used by the bot.
+- `public/styles.css`: Styles for the admin dashboard.
+- `views/editMessages.ejs`: EJS template for editing messages.
+- `views/layout.ejs`: EJS template for the layout.
 - `main.mjs`: Main script to run the bot.
+- `admin.js`: Script to run the admin dashboard.
 - `.env`: Environment variables configuration.
 - `package.json`: Project dependencies and scripts.
 - `README.md`: Project documentation.
