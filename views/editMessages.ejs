@@ -1,0 +1,11 @@
+<h2>Edit Message Configurations</h2>
+
+<form action="/admin" method="post">
+    <% for (let key in messages) { %>
+        <div class="form-group">
+            <label for="<%= key %>"><%= key %></label>
+            <textarea id="<%= key %>" name="<%= key %>" rows="4"><%= Array.isArray(messages[key]) ? messages[key].join('\n') : messages[key] %></textarea>
+        </div>
+    <% } %>
+    <button type="submit">Save Changes</button>
+</form>
