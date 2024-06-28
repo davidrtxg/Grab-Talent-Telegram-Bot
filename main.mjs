@@ -6,14 +6,10 @@ import path from 'path';
 import fetch from 'node-fetch';
 import { MESSAGES } from './config/messageConfig.mjs';
 
-// Load and validate environment variables
 const { TELEGRAM_TOKEN, EMAIL_ADDRESS, EMAIL_PASSWORD, GRAB_TALENT_EMAIL, ADMIN_GROUP_CHAT_ID } = process.env;
-validateEnvVariables([TELEGRAM_TOKEN, EMAIL_ADDRESS, EMAIL_PASSWORD, GRAB_TALENT_EMAIL, ADMIN_GROUP_CHAT_ID]);
-
 const LOG_FILE_PATH = 'email_usage_log.json';
 const userSteps = {};
 
-// Initialize nodemailer transporter
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: { user: EMAIL_ADDRESS, pass: EMAIL_PASSWORD }
@@ -21,23 +17,27 @@ const transporter = nodemailer.createTransport({
 
 const bot = new TelegramBot(TELEGRAM_TOKEN, { polling: true, cancellation: true });
 
-function validateEnvVariables(vars) {
-    const missingVars = vars.filter(v => !v);
-    if (missingVars.length) {
-        console.error(`Error: The following environment variables are not set: ${missingVars.join(', ')}`);
-        process.exit(1);
+bot.onText(/\/start/, (msg) => {
+    const chatId = msg.chat.id;
+    sendMessagesWithDelay(chatId, MESSAGES.welcome);
+});
+
+bot.on('message', async (msg) => {
+    const chatId = msg.chat.id;
+    const text = msg.text;
+
+    if (userSteps[chatId] && userSteps[chatId].step === 'awaiting_resume') {
+        if (msg.document) {
+            await handleResumeUpload(chatId, msg.document);
+        } else {
+            bot.sendMessage(chatId, MESSAGES.uploadResume);
+        }
+    } else if (text && validateEmail(text)) {
+        await handleEmailInput(chatId, text);
+    } else {
+        bot.sendMessage(chatId, MESSAGES.invalidEmail);
     }
-}
-
-function validateEmail(email) {
-    return /\S+@\S+\.\S+/.test(email);
-}
-
-function validateFile(document) {
-    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-    const maxSize = 2 * 1024 * 1024; // 2MB
-    return allowedTypes.includes(document.mime_type) && document.file_size <= maxSize;
-}
+});
 
 async function handleEmailInput(chatId, email) {
     if (validateEmail(email)) {
@@ -86,6 +86,16 @@ async function handleResumeUpload(chatId, document) {
     } catch (error) {
         await handleError(chatId, email, document.file_name, error);
     }
+}
+
+function validateEmail(email) {
+    return /\S+@\S+\.\S+/.test(email);
+}
+
+function validateFile(document) {
+    const allowedTypes = ['application/pdf', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
+    const maxSize = 2 * 1024 * 1024; // 2MB
+    return allowedTypes.includes(document.mime_type) && document.file_size <= maxSize;
 }
 
 async function downloadFile(fileId, dest) {
@@ -148,13 +158,7 @@ async function updateLogEntry(email, fileName, status, additionalLogs = {}) {
             logEntry.status = status;
             Object.assign(logEntry, additionalLogs);
         } else {
-            logs.push({
-                timestamp: new Date().toISOString(),
-                email,
-                fileName,
-                status,
-                ...additionalLogs
-            });
+            logs.push(logEntry);
         }
         await fs.writeFile(LOG_FILE_PATH, JSON.stringify(logs, null, 2));
     } catch (err) {
@@ -163,43 +167,15 @@ async function updateLogEntry(email, fileName, status, additionalLogs = {}) {
 }
 
 async function handleError(chatId, email, fileName, error) {
-    log('error', 'Error processing file', { email, fileName, error: error.message });
-    bot.sendMessage(chatId, MESSAGES.error);
+    console.error('Error processing file:', error);
     await updateLogEntry(email, fileName, 'Error', { error: error.message });
+    bot.sendMessage(chatId, MESSAGES.error);
 }
 
-function log(level, message, metadata = {}) {
-    console.log(JSON.stringify({ level, message, ...metadata, timestamp: new Date().toISOString() }));
-}
-
-async function sendMessagesWithDelay(chatId, messages, delayMs = 1000) {
-    for (const message of messages) {
-        await bot.sendMessage(chatId, message);
-        await delay(delayMs);
-    }
-}
-
-function delay(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function initializeBot() {
-    bot.onText(/\/start/, async (msg) => {
-        const chatId = msg.chat.id;
-        sendMessagesWithDelay(chatId, MESSAGES.welcome);
-        userSteps[chatId] = 'awaiting_email';
-    });
-
-    bot.on('message', async (msg) => {
-        const chatId = msg.chat.id;
-        if (userSteps[chatId] === 'awaiting_email') {
-            await handleEmailInput(chatId, msg.text);
-        } else if (userSteps[chatId]?.step === 'awaiting_resume' && msg.document) {
-            await handleResumeUpload(chatId, msg.document);
-        } else if (!msg.document && userSteps[chatId]?.step === 'awaiting_resume') {
-            bot.sendMessage(chatId, MESSAGES.uploadResume);
-        }
+function sendMessagesWithDelay(chatId, messages, delay = 1000) {
+    messages.forEach((msg, index) => {
+        setTimeout(() => {
+            bot.sendMessage(chatId, msg);
+        }, index * delay);
     });
 }
-
-initializeBot();
